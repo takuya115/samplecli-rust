@@ -74,6 +74,7 @@ impl RpnCalcurator {
                     "+" => x + y,
                     "-" => x - y,
                     "*" => x * y,
+                    "/" => x / y,
                     "%" => x % y,
                     _ => panic!("invalid token"),
                 };
@@ -93,3 +94,36 @@ impl RpnCalcurator {
         }
     }
 }
+
+// test -----------------------------------------
+#[cfg(test)]
+mod tests {
+    // このファイルの構造体・関数をすべて利用できるようにする
+    use super::*;
+
+    // 正常系
+    #[test]
+    fn test_ok() {
+        let calc = RpnCalcurator::new(false);
+
+        assert_eq!(calc.eval("5"), 5);
+        assert_eq!(calc.eval("50"), 50);
+        assert_eq!(calc.eval("-50"), -50);
+
+        assert_eq!(calc.eval("2 3 +"), 5);
+        assert_eq!(calc.eval("2 3 *"), 6);
+        assert_eq!(calc.eval("2 3 -"), -1);
+        assert_eq!(calc.eval("2 3 /"), 0);
+        assert_eq!(calc.eval("2 3 %"), 2);
+    }
+
+    // 異常系(panic発生)
+    #[test]
+    #[should_panic]
+    fn test_ng() {
+        let calc = RpnCalcurator::new(false);
+        // 扱えない演算子を渡す
+        calc.eval("1 1 ^");
+    }
+}
+
